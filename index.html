@@ -59,7 +59,8 @@ h1{margin:0 0 16px;font-size:clamp(36px,5vw,72px);line-height:.92;font-weight:70
 .lot:hover{opacity:.96;filter:drop-shadow(0 0 10px rgba(0,113,227,.22));stroke:var(--accent)}
 .lot-text{font:700 14px Inter,Arial,sans-serif;fill:#111;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round;pointer-events:none}
 .lot-sub{font:700 11px Inter,Arial,sans-serif;fill:#111;paint-order:stroke;stroke:#fff;stroke-width:3px;pointer-events:none}
-.lot-status{font:700 16px Inter,Arial,sans-serif;fill:#111;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round;text-anchor:middle;dominant-baseline:middle;pointer-events:none}
+.lot-status{font:800 22px Inter,Arial,sans-serif;fill:#111;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round;text-anchor:middle;dominant-baseline:middle;pointer-events:none}
+.lot-id{font:800 21px Inter,Arial,sans-serif;fill:#111;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round;text-anchor:middle;dominant-baseline:middle;pointer-events:none}
 .table-wrap{max-height:510px;overflow:auto;border-radius:20px;border:1px solid rgba(0,0,0,.06);background:#fff}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th,td{padding:12px 10px;border-bottom:1px solid rgba(0,0,0,.06);text-align:left}
@@ -203,14 +204,25 @@ function renderSvg(){
     els.svgLots.appendChild(poly);
 
     const box = bboxCenter(l.pts);
-    const label = document.createElementNS('http://www.w3.org/2000/svg','text');
-    label.setAttribute('x', box.x);
-    label.setAttribute('y', box.y);
-    label.setAttribute('class', 'lot-status');
-    const fontSize = box.w < 95 ? 13 : box.w < 120 ? 14 : box.w < 170 ? 15 : 16;
-    label.setAttribute('style', `font-size:${fontSize}px`);
-    label.textContent = statusText[st.status] || 'Вільно';
-    els.svgLots.appendChild(label);
+    const statusLabel = statusText[st.status] || 'Вільно';
+    const idLabel = document.createElementNS('http://www.w3.org/2000/svg','text');
+    idLabel.setAttribute('x', box.x);
+    idLabel.setAttribute('class', 'lot-id');
+    const idFontSize = box.w < 95 ? 15 : box.w < 120 ? 17 : box.w < 170 ? 19 : 22;
+    const statusFontSize = box.w < 95 ? 13 : box.w < 120 ? 15 : box.w < 170 ? 17 : 20;
+    const compact = box.h < 115;
+    idLabel.setAttribute('y', compact ? (box.y - 14) : (box.y - 20));
+    idLabel.setAttribute('style', `font-size:${idFontSize}px`);
+    idLabel.textContent = l.id;
+    els.svgLots.appendChild(idLabel);
+
+    const statusTextEl = document.createElementNS('http://www.w3.org/2000/svg','text');
+    statusTextEl.setAttribute('x', box.x);
+    statusTextEl.setAttribute('y', compact ? (box.y + 12) : (box.y + 15));
+    statusTextEl.setAttribute('class', 'lot-status');
+    statusTextEl.setAttribute('style', `font-size:${statusFontSize}px`);
+    statusTextEl.textContent = statusLabel;
+    els.svgLots.appendChild(statusTextEl);
   });
 }
 
